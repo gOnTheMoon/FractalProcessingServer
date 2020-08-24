@@ -4,7 +4,7 @@ using NotificationServer;
 
 namespace FractalProcessingServer
 {
-    public class FileSystemDispatcher : Dispatcher
+    public class FileSystemDispatcher : Dispatcher, IComponent, IRecipient
     {
         public override void DoDispatch(EventGroup eventGroup)
         {
@@ -12,6 +12,11 @@ namespace FractalProcessingServer
             {
                 bitmapEvent.Bitmap.Save(bitmapEvent.Request.FilePath, ImageFormat.Png);
             }
+        }
+
+        public void HandleNotification(Notification notification)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
