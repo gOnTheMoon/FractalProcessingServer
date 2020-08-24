@@ -2,11 +2,11 @@
 
 namespace FractalProcessingServer
 {
-    public class RequestListener : IComponent, IPublisher
+    public class RequestListener : Logic, IComponent, IPublisher
     {
-        public void Subscribe(IRecipient recipient, IRule rule)
+        public override IEvent ProcessEvent(IEvent eventToProcess)
         {
-            throw new System.NotImplementedException();
+            return eventToProcess;
         }
     }
 }

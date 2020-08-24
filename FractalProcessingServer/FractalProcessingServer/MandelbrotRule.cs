@@ -6,11 +6,11 @@ namespace FractalProcessingServer
     {
         public bool IsActivated(IEvent eventToCheck)
         {
-            PixelEvent pixelEvent = eventToCheck as PixelEvent;
+            ComplexPixelEvent pixelEvent = eventToCheck as ComplexPixelEvent;
 
             if (pixelEvent != null)
             {
-                return pixelEvent.Request is MandelbrotRequestEvent;
+                return pixelEvent.Pixel.Request is MandelbrotRequestEvent;
             }
 
             return false;
@@ -21,11 +21,11 @@ namespace FractalProcessingServer
     {
         public bool IsActivated(IEvent eventToCheck)
         {
-            PixelEvent pixelEvent = eventToCheck as PixelEvent;
+            ComplexPixelEvent pixelEvent = eventToCheck as ComplexPixelEvent;
     
             if (pixelEvent != null)
             {
-                return pixelEvent.Request is JuliaRequestEvent;
+                return pixelEvent.Pixel.Request is JuliaRequestEvent;
             }
     
             return false;

@@ -19,4 +19,14 @@ namespace NotificationServer
     public interface IComponent
     {
     }
+
+    public class RuntimeContext : IRuntimeContext
+    {
+        public IComponentContainer Components { get; } =
+            new ComponentContainer();
+    }
+
+    public class ComponentContainer : List<IComponent>, IComponentContainer
+    {
+    }
 }

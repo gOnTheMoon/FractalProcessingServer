@@ -19,6 +19,7 @@ namespace FractalProcessingServer
 
             // Add components to component container
             IComponentContainer componentContainer = context.Components;
+            componentContainer.Add(requestListener);
             componentContainer.Add(pixelGeneratorLogic);
             componentContainer.Add(pixelToComplexConvertLogic);
             componentContainer.Add(mandelbrotLogic);
@@ -29,6 +30,12 @@ namespace FractalProcessingServer
             componentContainer.Add(fileSystemDispatcher);
 
             // Link components
+            // Lower chain:
+            requestListener.Subscribe(pixelStoreLogic, new ActivateAllRule());
+            colorConvertLogic.Subscribe(pixelStoreLogic, new ActivateAllRule());
+            pixelStoreLogic.Subscribe(bitmapConvertLogic, new ActivateAllRule());
+            bitmapConvertLogic.Subscribe(fileSystemDispatcher, new ActivateAllRule());
+
             // Upper chain
             requestListener.Subscribe(pixelGeneratorLogic, new ActivateAllRule());
             pixelGeneratorLogic.Subscribe(pixelToComplexConvertLogic, new ActivateAllRule());
@@ -36,12 +43,6 @@ namespace FractalProcessingServer
             pixelToComplexConvertLogic.Subscribe(juliaLogic, new JuilaRule());
             mandelbrotLogic.Subscribe(colorConvertLogic, new ActivateAllRule());
             juliaLogic.Subscribe(colorConvertLogic, new ActivateAllRule());
-
-            // Lower chain:
-            requestListener.Subscribe(pixelStoreLogic, new ActivateAllRule());
-            colorConvertLogic.Subscribe(pixelStoreLogic, new ActivateAllRule());
-            pixelStoreLogic.Subscribe(bitmapConvertLogic, new ActivateAllRule());
-            bitmapConvertLogic.Subscribe(fileSystemDispatcher, new ActivateAllRule());
         }
     }
 }

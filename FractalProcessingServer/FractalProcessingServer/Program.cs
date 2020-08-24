@@ -1,4 +1,5 @@
-﻿using NotificationServer;
+﻿using System.Linq;
+using NotificationServer;
 
 namespace FractalProcessingServer
 {
@@ -15,33 +16,36 @@ namespace FractalProcessingServer
                     Right = 2,
                     Width = 640,
                     Height = 480,
-                    FilePath = @"mandelbrot.png",
+                    FilePath = @"mandelbrot2.png",
                     MaxNumberOfIterations = 100
                 };
 
-            PixelGeneratorLogic pixelGeneratorLogic = new PixelGeneratorLogic();
-            PixelToComplexConvertLogic pixelToComplexConvertLogic = new PixelToComplexConvertLogic();
-            MandelbrotLogic mandelbrotLogic = new MandelbrotLogic();
-            ColorConvertLogic colorConvertLogic = new ColorConvertLogic();
-            PixelStoreLogic pixelStoreLogic = new PixelStoreLogic();
-            BitmapConvertLogic bitmapConvertLogic = new BitmapConvertLogic();
-            FileSystemDispatcher fileSystemDispatcher = new FileSystemDispatcher();
-
-            pixelStoreLogic.ProcessEvent(request);
-
-            IEvent pixels = pixelGeneratorLogic.ProcessEvent(request);
-
-            foreach (var pixel in (EventGroup)pixels)
-            {
-                IEvent processedEvent = pixelStoreLogic.ProcessEvent(colorConvertLogic.ProcessEvent(mandelbrotLogic
-                                                                         .ProcessEvent(pixelToComplexConvertLogic
-                                                                             .ProcessEvent(pixel))));
-
-                if (processedEvent != null)
+            JuliaRequestEvent request2 =
+                new JuliaRequestEvent
                 {
-                    fileSystemDispatcher.DoDispatch(new EventGroup() { bitmapConvertLogic.ProcessEvent(processedEvent) });
-                }
-            }
+                    C = -1,
+                    Bottom = -1.5,
+                    Top = 1.5,
+                    Left = -2,
+                    Right = 2,
+                    Width = 640,
+                    Height = 480,
+                    FilePath = @"julia2.png",
+                    MaxNumberOfIterations = 100
+                };
+
+            FractalProcessingServerComponentBuilder componentBuilder =
+                new FractalProcessingServerComponentBuilder();
+
+            RuntimeContext runtimeContext = new RuntimeContext();
+            componentBuilder.BuildComponents(runtimeContext);
+
+            RequestListener listener =
+                runtimeContext.Components.OfType<RequestListener>()
+                              .FirstOrDefault();
+
+            listener.OnNext(request);
+            listener.OnNext(request2);
         }
     }
 }
