@@ -33,11 +33,11 @@ namespace FractalProcessingServer
             // Lower chain:
             requestListener.Subscribe(pixelStoreLogic, new ActivateAllRule());
             colorConvertLogic.Subscribe(pixelStoreLogic, new ActivateAllRule());
-            pixelStoreLogic.Subscribe(bitmapConvertLogic, new ActivateAllRule());
+            pixelStoreLogic.Subscribe(bitmapConvertLogic, new TypeRule(typeof(ImageEvent)));
             bitmapConvertLogic.Subscribe(fileSystemDispatcher, new ActivateAllRule());
 
             // Upper chain
-            requestListener.Subscribe(pixelGeneratorLogic, new ActivateAllRule());
+            pixelStoreLogic.Subscribe(pixelGeneratorLogic, new TypeRule(typeof(FractalRequestEvent)));
             pixelGeneratorLogic.Subscribe(pixelToComplexConvertLogic, new ActivateAllRule());
             pixelToComplexConvertLogic.Subscribe(mandelbrotLogic, new MandelbrotRule());
             pixelToComplexConvertLogic.Subscribe(juliaLogic, new JuilaRule());

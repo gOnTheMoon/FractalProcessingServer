@@ -22,8 +22,7 @@ namespace FractalProcessingServer
             switch (eventToProcess)
             {
                 case FractalRequestEvent requestEvent:
-                    ProcessFractalRequest(requestEvent);
-                    break;
+                    return ProcessFractalRequest(requestEvent);
                 case ColoredPixelEvent coloredPixel:
                     return ProcessColoredPixel(coloredPixel);
                     break;
@@ -32,9 +31,10 @@ namespace FractalProcessingServer
             return null;
         }
 
-        private void ProcessFractalRequest(FractalRequestEvent requestEvent)
+        private FractalRequestEvent ProcessFractalRequest(FractalRequestEvent requestEvent)
         {
             _requestToPixels[requestEvent] = new List<ColoredPixelEvent>();
+            return requestEvent;
         }
 
         private IEvent ProcessColoredPixel(ColoredPixelEvent coloredPixel)
