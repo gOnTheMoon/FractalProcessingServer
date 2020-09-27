@@ -4,9 +4,21 @@ using System.Reactive.Subjects;
 
 namespace NotificationServer
 {
-    public abstract class Logic : IComponent, IPublisher, IRecipient, IObserver<IEvent>
+    public abstract class Logic : IStateDrivenEntity, IComponent, IPublisher, IRecipient, IObserver<IEvent>
     {
+        private readonly StateDrivenEntityHelper mStateDrivenEntityHelper;
         private readonly ISubject<IEvent> mSubject = new Subject<IEvent>();
+
+        protected Logic()
+        {
+            mStateDrivenEntityHelper = 
+                new StateDrivenEntityHelper(InnerUninitializedToInitialized,
+                                            InnerInitializedToStarted,
+                                            InnerStartedToInitialized,
+                                            InnerInitializedToUninitialized,
+                                            InnerAnyToInvalid,
+                                            InnerInvalidToUninitialized);
+        }
 
         public abstract IEvent ProcessEvent(IEvent eventToProcess);
 
@@ -52,6 +64,37 @@ namespace NotificationServer
                     mSubject.OnNext(currentEvent);
                 }
             }
+        }
+
+        protected virtual void InnerUninitializedToInitialized()
+        {
+        }
+
+        protected virtual void InnerInitializedToStarted()
+        {
+        }
+
+        protected virtual void InnerStartedToInitialized()
+        {
+        }
+
+        protected virtual void InnerInitializedToUninitialized()
+        {
+        }
+
+        protected virtual void InnerAnyToInvalid()
+        {
+        }
+
+        protected virtual void InnerInvalidToUninitialized()
+        {
+        }
+
+        public State CurrentState => mStateDrivenEntityHelper.CurrentState;
+
+        public void TransformTo(State state)
+        {
+            mStateDrivenEntityHelper.TransformTo(state);
         }
     }
 }
